@@ -93,6 +93,11 @@ const ContactSection: React.FC = () => {
       message: message
     };
 
+    console.log("service_yqjoa0c", serviceId);
+    console.log("template_50db4rg", templateId);
+    console.log("Rb3hueYTab-XB8W15", publicKey);
+    console.log("templateParams", templateParams);
+
     emailjs.send(serviceId, templateId, templateParams, publicKey)
       .then((response) => {
         console.log('SUCCESS!', response.status, response.text);

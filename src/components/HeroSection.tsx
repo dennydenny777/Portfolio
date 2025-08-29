@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronDown, Lock, Unlock, Terminal, Shield } from 'lucide-react';
+import { ChevronDown, Lock, Unlock, Terminal, Shield, FileArrowDown } from 'lucide-react';
 import GlitchText from './GlitchText';
 
 const HeroSection: React.FC = () => {
