@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Terminal, Mail, Github, Linkedin, Send, Globe } from 'lucide-react';
-import emailjs from '@emailjs/browser'; // Import EmailJS
+import { Terminal, Mail, Github, Linkedin, Send } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 import InstagramIcon from './InstagramIcon';
 
 const ContactSection: React.FC = () => {
@@ -9,11 +9,22 @@ const ContactSection: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [sending, setSending] = useState(false);
+
+  const getLineClass = (line: string) => {
+    if (line.startsWith('$')) return 'text-green-400 font-bold';
+    if (line.startsWith('>')) return 'text-cyan-400 font-bold';
+    if (line.includes('✅')) return 'text-green-400';
+    if (line.includes('🔐') || line.includes('🛡️')) return 'text-yellow-400';
+    if (line.includes('Error')) return 'text-red-400';
+    return 'text-gray-300';
+  };
 
   const handleCommand = (cmd: string) => {
+    const cmdNormalized = cmd.toLowerCase().trim();
     const newOutput = [...output, `$ ${cmd}`];
-    
-    switch (cmd.toLowerCase().trim()) {
+
+    switch (cmdNormalized) {
       case 'help':
         newOutput.push(
           '> Available Commands:',
@@ -25,6 +36,7 @@ const ContactSection: React.FC = () => {
           '  🔐 security       - Show security status'
         );
         break;
+
       case 'whois denny':
       case 'whois':
         newOutput.push(
@@ -35,6 +47,7 @@ const ContactSection: React.FC = () => {
           '  🔐 Clearance: Ethical Hacker | Security Enthusiast'
         );
         break;
+
       case 'socials':
         newOutput.push(
           '> Social Network Analysis:',
@@ -44,6 +57,7 @@ const ContactSection: React.FC = () => {
           '  📊 Status: All channels secure ✅'
         );
         break;
+
       case 'resume':
         newOutput.push(
           '> Initiating secure download...',
@@ -52,10 +66,12 @@ const ContactSection: React.FC = () => {
           '  ✅ Download complete'
         );
         break;
+
       case 'clear':
         setOutput(['> Terminal cleared. Type "help" for available commands']);
         setCommand('');
         return;
+
       case 'message':
         newOutput.push(
           '> Initializing encrypted communication channel...',
@@ -64,6 +80,7 @@ const ContactSection: React.FC = () => {
           '  ✅ Ready to receive message'
         );
         break;
+
       case 'security':
         newOutput.push(
           '> Security Status Report:',
@@ -73,43 +90,38 @@ const ContactSection: React.FC = () => {
           '  ✅ All systems secure'
         );
         break;
+
       default:
         newOutput.push(`> Error: Command "${cmd}" not recognized. Type "help" for available commands.`);
     }
-    
+
     setOutput(newOutput);
     setCommand('');
   };
 
-  const sendEmail = (e: React.FormEvent) => {
+  const sendEmail = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (sending) return;
 
+    setSending(true);
     const serviceId = 'service_yqjoa0c';
     const templateId = 'template_50db4rg';
     const publicKey = 'Rb3hueYTab-XB8W15';
-    const templateParams = {
-      from_name: name,
-      from_email: email,
-      message: message
-    };
+    const templateParams = { from_name: name, from_email: email, message };
 
-    console.log("service_yqjoa0c", serviceId);
-    console.log("template_50db4rg", templateId);
-    console.log("Rb3hueYTab-XB8W15", publicKey);
-    console.log("templateParams", templateParams);
-
-    emailjs.send(serviceId, templateId, templateParams, publicKey)
-      .then((response) => {
-        console.log('SUCCESS!', response.status, response.text);
-        setOutput(prevOutput => [...prevOutput, '> Message sent successfully!']);
-        setName('');
-        setEmail('');
-        setMessage('');
-      })
-      .catch((error) => {
-        console.error('FAILED...', error); // Use console.error for better visibility
-        setOutput(prevOutput => [...prevOutput, '> Error: Failed to send message. Check console for details.']);
-      });
+    try {
+      const response = await emailjs.send(serviceId, templateId, templateParams, publicKey);
+      setOutput(prev => [...prev, '> Message sent successfully!']);
+      setName('');
+      setEmail('');
+      setMessage('');
+      console.log('SUCCESS!', response.status, response.text);
+    } catch (error) {
+      setOutput(prev => [...prev, '> Error: Failed to send message. Check console for details.']);
+      console.error('FAILED...', error);
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -120,11 +132,11 @@ const ContactSection: React.FC = () => {
             $ init contact
           </span>
         </h2>
-        
-        <div className="grid lg:grid-cols-2 gap-8 md:grid-cols-1"> {/* Modified grid layout */}
-          {/* Terminal Interface */}
-          <div className="bg-gray-900/90 border border-green-500/30 rounded-lg p-6 backdrop-blur-sm hover:border-green-500/60 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,65,0.2)]">
-            {/* Terminal Header */}
+
+        <div className="grid lg:grid-cols-2 sm:grid-cols-1 gap-8">
+          {/* Terminal */}
+          <div className="relative bg-gray-900/90 border border-green-500/30 rounded-lg p-6 backdrop-blur-sm hover:border-green-500/60 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,65,0.2)]">
+            {/* Header */}
             <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-700">
               <div className="flex space-x-2">
                 <div className="w-3 h-3 bg-red-500 rounded-full"></div>
@@ -136,51 +148,44 @@ const ContactSection: React.FC = () => {
                 <span className="font-mono text-sm animate-pulse">denny@cybersec:~</span>
               </div>
             </div>
-            
-            {/* Terminal Output */}
+
+            {/* Output */}
             <div className="h-64 overflow-y-auto mb-4 font-mono text-sm space-y-1">
               {output.map((line, index) => (
-                <div key={index} className={
-                  line.startsWith('$') ? 'text-green-400 font-bold' : 
-                  line.startsWith('>') ? 'text-cyan-400 font-bold' :
-                  line.includes('✅') ? 'text-green-400' :
-                  line.includes('🔐') || line.includes('🛡️') ? 'text-yellow-400' :
-                  line.includes('Error') ? 'text-red-400' :
-                  'text-gray-300'
-                }>
+                <div key={index} className={getLineClass(line)}>
                   {line}
                 </div>
               ))}
             </div>
-            
-            {/* Terminal Input */}
+
+            {/* Input */}
             <div className="flex items-center">
               <span className="text-green-400 font-mono mr-2 animate-pulse">root@denny:~$</span>
               <input
                 type="text"
                 value={command}
                 onChange={(e) => setCommand(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleCommand(command)}
+                onKeyDown={(e) => e.key === 'Enter' && handleCommand(command)}
                 className="flex-1 bg-transparent text-gray-300 font-mono focus:outline-none focus:text-green-400 transition-colors"
                 placeholder="Type command..."
               />
             </div>
-            
-            {/* Floating security icons */}
-            <div className="absolute top-4 right-4 flex space-x-2 opacity-20">
+
+            {/* Floating icons */}
+            <div className="absolute top-2 right-2 flex space-x-2 opacity-20 pointer-events-none">
               <div className="animate-float">🔒</div>
               <div className="animate-float-delayed">🛡️</div>
               <div className="animate-float">🔐</div>
             </div>
           </div>
-          
+
           {/* Contact Form */}
           <div className="bg-gray-900/80 border border-blue-500/30 rounded-lg p-6 backdrop-blur-sm hover:border-blue-500/60 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,212,255,0.2)]">
             <h3 className="text-2xl font-bold mb-6 font-mono text-blue-400">
               🔐 Encrypted Message
             </h3>
-            
-            <form className="space-y-4" onSubmit={sendEmail}> {/* Add onSubmit handler */}
+
+            <form className="space-y-4" onSubmit={sendEmail}>
               <div>
                 <label className="block font-mono text-sm text-gray-300 mb-2">Name</label>
                 <input
@@ -191,7 +196,7 @@ const ContactSection: React.FC = () => {
                   onChange={(e) => setName(e.target.value)}
                 />
               </div>
-              
+
               <div>
                 <label className="block font-mono text-sm text-gray-300 mb-2">Email</label>
                 <input
@@ -202,7 +207,7 @@ const ContactSection: React.FC = () => {
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
-              
+
               <div>
                 <label className="block font-mono text-sm text-gray-300 mb-2">Message</label>
                 <textarea
@@ -213,20 +218,21 @@ const ContactSection: React.FC = () => {
                   onChange={(e) => setMessage(e.target.value)}
                 />
               </div>
-              
+
               <button
                 type="submit"
+                disabled={sending}
                 className="w-full flex items-center justify-center px-6 py-3 bg-blue-500 text-black font-bold rounded font-mono hover:bg-blue-400 transition-all duration-300 hover:shadow-[0_0_20px_rgba(0,212,255,0.5)] group"
               >
                 <Send className="h-4 w-4 mr-2 group-hover:animate-pulse" />
                 &gt; execute send --encrypted
               </button>
             </form>
-            
-            {/* Quick Contact Buttons */}
+
+            {/* Quick Contact */}
             <div className="mt-8 grid grid-cols-4 gap-3 justify-center">
               <a
-                href="mailto:dennydaniel321@gmail.com"
+                href="mailto:dennyjobindaniel@gmail.com"
                 className="flex items-center justify-center p-3 bg-green-500/10 border border-green-500/30 rounded text-green-400 hover:bg-green-500/20 transition-all duration-300"
               >
                 <Mail className="h-5 w-5" />
@@ -248,7 +254,7 @@ const ContactSection: React.FC = () => {
                 <Linkedin className="h-5 w-5" />
               </a>
               <a
-                href="https://www.instagram.com/its_den_ny_/"   
+                href="https://www.instagram.com/its_den_ny_/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center p-3 bg-pink-500/10 border border-pink-500/30 rounded text-pink-400 hover:bg-pink-500/20 transition-all duration-300"
