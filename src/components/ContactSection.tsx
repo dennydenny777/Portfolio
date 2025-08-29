@@ -84,10 +84,9 @@ const ContactSection: React.FC = () => {
   const sendEmail = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const serviceId = 'YOUR_SERVICE_ID'; // Replace with your EmailJS service ID
-    const templateId = 'YOUR_TEMPLATE_ID'; // Replace with your EmailJS template ID
-    const publicKey = 'YOUR_PUBLIC_KEY';   // Replace with your EmailJS public key
-
+    const serviceId = 'service_yqjoa0c';
+    const templateId = 'template_50db4rg';
+    const publicKey = 'Rb3hueYTab-XB8W15';
     const templateParams = {
       from_name: name,
       from_email: email,
