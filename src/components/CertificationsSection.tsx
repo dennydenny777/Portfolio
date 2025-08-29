@@ -21,24 +21,6 @@ const CertificationsSection: React.FC = () => {
       bgColor: 'bg-blue-500/10',
       borderColor: 'border-blue-500/30'
     },
-    {
-      title: 'NCC & NSS',
-      issuer: 'Government of India',
-      status: 'Completed',
-      icon: Users,
-      color: 'text-purple-400',
-      bgColor: 'bg-purple-500/10',
-      borderColor: 'border-purple-500/30'
-    },
-    {
-      title: 'Cinematography & Editing',
-      issuer: 'Professional Training',
-      status: 'Certified',
-      icon: Camera,
-      color: 'text-pink-400',
-      bgColor: 'bg-pink-500/10',
-      borderColor: 'border-pink-500/30'
-    }
   ];
 
   return (
