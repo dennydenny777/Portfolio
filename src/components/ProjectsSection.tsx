@@ -1,8 +1,20 @@
 import React from 'react';
-import { ExternalLink, Github, Shield, Globe, Smartphone, Users } from 'lucide-react';
+import { ExternalLink, Github, Shield, Globe, Smartphone } from 'lucide-react';
 
 const ProjectsSection: React.FC = () => {
   const projects = [
+    {
+      title: 'Recon Tool',
+      category: 'cybersecurity',
+      description: 'Python-based reconnaissance tool for subdomain enumeration, host discovery, and port scanning with automated reporting.',
+      tech: ['Python', 'Socket', 'Subprocess', 'CLI Tool'],
+      icon: Shield,
+      color: 'text-red-400',
+      bgColor: 'bg-red-500/10',
+      borderColor: 'border-red-500/30',
+      source: 'https://github.com/dennydenny777/RECON_TOOL',
+      launch: null  // or you can remove this property if no live version
+    },
     {
       title: 'Insight - Police Case Tracking',
       category: 'cybersecurity',
@@ -11,7 +23,9 @@ const ProjectsSection: React.FC = () => {
       icon: Shield,
       color: 'text-green-400',
       bgColor: 'bg-green-500/10',
-      borderColor: 'border-green-500/30'
+      borderColor: 'border-green-500/30',
+      source: 'https://github.com/<your-username>/insight', // Change to your real link
+      launch: null
     },
     {
       title: 'Rescue Wings App',
@@ -21,7 +35,9 @@ const ProjectsSection: React.FC = () => {
       icon: Smartphone,
       color: 'text-purple-400',
       bgColor: 'bg-purple-500/10',
-      borderColor: 'border-purple-500/30'
+      borderColor: 'border-purple-500/30',
+      source: 'https://github.com/<your-username>/rescue-wings',
+      launch: null
     },
     {
       title: 'Online Auction System',
@@ -31,9 +47,10 @@ const ProjectsSection: React.FC = () => {
       icon: Globe,
       color: 'text-blue-400',
       bgColor: 'bg-blue-500/10',
-      borderColor: 'border-blue-500/30'
-    },
-
+      borderColor: 'border-blue-500/30',
+      source: 'https://github.com/<your-username>/online-auction',
+      launch: null
+    }
   ];
 
   return (
@@ -49,7 +66,7 @@ const ProjectsSection: React.FC = () => {
           {projects.map((project, index) => (
             <div 
               key={index} 
-              className={`${project.bgColor} border ${project.borderColor} rounded-lg p-6 backdrop-blur-sm hover:shadow-[0_0_30px_rgba(0,255,65,0.1)] transition-all duration-300 group cursor-pointer transform hover:scale-105 hover:rotate-1`}
+              className={`${project.bgColor} border ${project.borderColor} rounded-lg p-6 backdrop-blur-sm hover:shadow-[0_0_30px_rgba(0,255,65,0.1)] transition-all duration-300 group cursor-pointer transform hover:scale-105 hover:rotate-1 relative`}
             >
               {/* Terminal header */}
               <div className="flex items-center justify-between mb-4">
@@ -85,14 +102,28 @@ const ProjectsSection: React.FC = () => {
               </div>
               
               <div className="flex space-x-3">
-                <button className={`flex items-center px-3 py-2 text-xs font-mono ${project.color} border border-current rounded hover:bg-current hover:text-black transition-all duration-300`}>
-                  <Github className="h-4 w-4 mr-1" />
-                  Source
-                </button>
-                <button className={`flex items-center px-3 py-2 text-xs font-mono ${project.color} border border-current rounded hover:bg-current hover:text-black transition-all duration-300 group-hover:animate-pulse`}>
-                  <ExternalLink className="h-4 w-4 mr-1" />
-                  Launch
-                </button>
+                {project.source && (
+                  <a 
+                    href={project.source} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className={`flex items-center px-3 py-2 text-xs font-mono ${project.color} border border-current rounded hover:bg-current hover:text-black transition-all duration-300`}
+                  >
+                    <Github className="h-4 w-4 mr-1" />
+                    Source
+                  </a>
+                )}
+                {project.launch && (
+                  <a 
+                    href={project.launch} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className={`flex items-center px-3 py-2 text-xs font-mono ${project.color} border border-current rounded hover:bg-current hover:text-black transition-all duration-300 group-hover:animate-pulse`}
+                  >
+                    <ExternalLink className="h-4 w-4 mr-1" />
+                    Launch
+                  </a>
+                )}
               </div>
               
               {/* Glitch effect overlay */}
